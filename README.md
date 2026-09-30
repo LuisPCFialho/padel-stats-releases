@@ -9,6 +9,12 @@ Tudo o que registas fica no teu telemóvel. Sem conta e sem publicidade.
 
 ## Instalar
 
+A forma mais simples: abre **https://luispcfialho.github.io/padel-stats-releases/**
+no telemóvel Android e toca em **Descarregar para Android**. A página explica o
+resto, em português, espanhol, francês e inglês.
+
+À mão:
+
 1. Abre a **[última versão](https://github.com/LuisPCFialho/padel-stats-releases/releases/latest)**
    no telemóvel.
 2. Descarrega o ficheiro **`PadelStats-X.Y.Z.apk`** (o que não tem nada depois
