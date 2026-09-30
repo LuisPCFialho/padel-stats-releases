@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Padel Stats</title>
+<meta name="description" content="Estatísticas de padel, ponto a ponto. Descarregar a app para Android.">
+<meta name="theme-color" content="#071324" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F2F5F9" media="(prefers-color-scheme: light)">
+<meta property="og:title" content="Padel Stats">
+<meta property="og:description" content="Estatísticas de padel, ponto a ponto.">
+<meta property="og:image" content="assets/icon.png">
+<link rel="icon" href="assets/icon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<style>
+  /* As cores são as da app (AppPalette em lib/app/theme.dart). Escuro de
+     origem, como a app; claro quando o telemóvel está em claro.
+     Cantos: 16px em cartões e botões, 28px nas capturas. */
+  :root {
+    --bg: #071324;
+    --surface: #0E1D33;
+    --line: rgba(34, 184, 240, .16);
+    --text: #EAF2FB;
+    --muted: #8FA3BC;
+    --accent: #22B8F0;
+    --on-accent: #071324;
+    --shadow: 0 30px 60px -30px rgba(2, 8, 18, .9);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #F2F5F9;
+      --surface: #FFFFFF;
+      --line: rgba(11, 111, 160, .18);
+      --text: #0B1728;
+      --muted: #475569;
+      --accent: #0B6FA0;
+      --on-accent: #FFFFFF;
+      --shadow: 0 30px 60px -30px rgba(11, 60, 100, .45);
+      color-scheme: light;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 20px 20px 48px; }
+
+  header { display: flex; align-items: center; gap: 12px; }
+  header img { width: 44px; height: 44px; border-radius: 12px; }
+  header .name { font-weight: 700; font-size: 18px; }
+  .langs { margin-left: auto; display: flex; gap: 2px; }
+  .langs a {
+    color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
+    padding: 10px 8px; border-radius: 10px; min-width: 40px; text-align: center;
+  }
+  .langs a[aria-current="true"] { color: var(--text); background: var(--surface); }
+
+  main { display: grid; grid-template-columns: 1fr; gap: 40px; margin-top: 36px; }
+  @media (min-width: 900px) {
+    main { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 64px; margin-top: 56px; }
+  }
+
+  h1 {
+    font-size: clamp(32px, 6.5vw, 46px); line-height: 1.08; letter-spacing: -.02em;
+    margin: 0 0 16px; max-width: 20ch;
+  }
+  .lead { color: var(--muted); font-size: 18px; margin: 0 0 28px; max-width: 42ch; }
+
+  .cta {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; max-width: 420px; min-height: 60px; padding: 0 24px;
+    background: var(--accent); color: var(--on-accent);
+    border-radius: 16px; text-decoration: none; font-weight: 700; font-size: 18px;
+    white-space: nowrap;
+    transition: transform .15s cubic-bezier(.16, 1, .3, 1), filter .15s;
+  }
+  .cta:hover { filter: brightness(1.06); }
+  .cta:active { transform: scale(.98); }
+  .cta:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+  .cta i { font-size: 22px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 10px 0 0; min-height: 1.55em; }
+  .notice {
+    margin: 18px 0 0; padding: 12px 14px; max-width: 420px;
+    border: 1px solid var(--line); border-radius: 16px; background: var(--surface);
+    font-size: 15px;
+  }
+
+  h2 { font-size: 20px; margin: 44px 0 14px; letter-spacing: -.01em; }
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; max-width: 520px; }
+  ol.steps li {
+    counter-increment: s; position: relative; padding: 0 0 18px 48px; min-height: 36px;
+  }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: -3px;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--surface); border: 1px solid var(--line);
+    color: var(--accent); font-weight: 700; font-size: 15px;
+  }
+
+  .notes { display: grid; gap: 12px; margin-top: 12px; max-width: 520px; }
+  .note {
+    display: grid; grid-template-columns: 28px 1fr; gap: 4px 12px;
+    padding: 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line);
+  }
+  .note i { font-size: 24px; color: var(--accent); grid-row: span 2; margin-top: 1px; }
+  .note b { font-size: 16px; }
+  .note p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .shots { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .shots img {
+    width: 100%; height: auto; display: block; border-radius: 28px;
+    border: 1px solid var(--line); box-shadow: var(--shadow); background: #071324;
+  }
+  .shots img:last-child { margin-top: 56px; }
+  @media (min-width: 900px) {
+    .shots { position: sticky; top: 32px; }
+  }
+
+  footer {
+    margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 14px;
+  }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { .cta { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="assets/icon.png" alt="" width="44" height="44">
+    <span class="name">Padel Stats</span>
+    <nav class="langs" aria-label="Idioma">
+      <a href="?lang=pt" data-lang="pt" lang="pt">PT</a>
+      <a href="?lang=es" data-lang="es" lang="es">ES</a>
+      <a href="?lang=fr" data-lang="fr" lang="fr">FR</a>
+      <a href="?lang=en" data-lang="en" lang="en">EN</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h1 data-t="title">Estatísticas de padel, ponto a ponto.</h1>
+      <p class="lead" data-t="lead">Três toques por ponto. No fim tens as estatísticas de cada jogadora e o relatório do encontro.</p>
+
+      <a class="cta" id="download" href="https://github.com/LuisPCFialho/padel-stats-releases/releases/latest">
+        <i class="ph-bold ph-download-simple" aria-hidden="true"></i>
+        <span data-t="cta">Descarregar para Android</span>
+      </a>
+      <p class="meta" id="meta" data-t="metaLoading">Ficheiro APK para Android</p>
+      <p class="notice" id="ios" hidden data-t="ios">Por agora a app só existe para Android.</p>
+      <p class="notice" id="desktop" hidden data-t="desktop">Abre esta página no telemóvel Android para instalar a app.</p>
+
+      <h2 data-t="installTitle">Instalar</h2>
+      <ol class="steps">
+        <li data-t="step1">Toca em Descarregar e espera que o ficheiro chegue ao telemóvel.</li>
+        <li data-t="step2">Abre o ficheiro, a partir da notificação ou da pasta Transferências.</li>
+        <li data-t="step3">Se o Android pedir, autoriza o navegador a instalar apps e toca em Instalar.</li>
+      </ol>
+
+      <div class="notes">
+        <div class="note">
+          <i class="ph ph-shield-check" aria-hidden="true"></i>
+          <b data-t="protectTitle">Se aparecer o Play Protect</b>
+          <p data-t="protectBody">A app não está na Play Store, por isso o Android pode avisar que não a conhece. Toca em «Mais detalhes» e depois em «Instalar mesmo assim».</p>
+        </div>
+        <div class="note">
+          <i class="ph ph-arrows-clockwise" aria-hidden="true"></i>
+          <b data-t="updatesTitle">Actualiza-se sozinha</b>
+          <p data-t="updatesBody">Quando houver uma versão nova, a app avisa no ecrã inicial e instala-a com um toque. Não precisas de voltar a esta página.</p>
+        </div>
+        <div class="note">
+          <i class="ph ph-lock-simple" aria-hidden="true"></i>
+          <b data-t="privacyTitle">Os dados ficam contigo</b>
+          <p data-t="privacyBody">Tudo o que registas fica no telemóvel. Sem conta e sem publicidade.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="shots">
+      <img src="assets/registo.webp" width="600" height="1257" data-alt="altRecord" alt="Registo de um ponto: como terminou o ponto">
+      <img src="assets/estatisticas.webp" width="600" height="1257" loading="lazy" data-alt="altStats" alt="Estatísticas de um encontro">
+    </aside>
+  </main>
+
+  <footer>
+    <a href="https://github.com/LuisPCFialho/padel-stats-releases/releases" data-t="allVersions">Todas as versões</a>
+    <span>BananaWare</span>
+  </footer>
+</div>
+
+<script>
+  // Textos nas quatro línguas da app. O português fica também no HTML, para
+  // a página se ler mesmo sem JavaScript.
+  const T = {
+    pt: {
+      title: 'Estatísticas de padel, ponto a ponto.',
+      lead: 'Três toques por ponto. No fim tens as estatísticas de cada jogadora e o relatório do encontro.',
+      cta: 'Descarregar para Android',
+      meta: 'Versão {v} · {s} MB',
+      metaLoading: 'Ficheiro APK para Android',
+      ios: 'Por agora a app só existe para Android.',
+      desktop: 'Abre esta página no telemóvel Android para instalar a app.',
+      installTitle: 'Instalar',
+      step1: 'Toca em Descarregar e espera que o ficheiro chegue ao telemóvel.',
+      step2: 'Abre o ficheiro, a partir da notificação ou da pasta Transferências.',
+      step3: 'Se o Android pedir, autoriza o navegador a instalar apps e toca em Instalar.',
+      protectTitle: 'Se aparecer o Play Protect',
+      protectBody: 'A app não está na Play Store, por isso o Android pode avisar que não a conhece. Toca em «Mais detalhes» e depois em «Instalar mesmo assim».',
+      updatesTitle: 'Actualiza-se sozinha',
+      updatesBody: 'Quando houver uma versão nova, a app avisa no ecrã inicial e instala-a com um toque. Não precisas de voltar a esta página.',
+      privacyTitle: 'Os dados ficam contigo',
+      privacyBody: 'Tudo o que registas fica no telemóvel. Sem conta e sem publicidade.',
+      allVersions: 'Todas as versões',
+      altRecord: 'Registo de um ponto: como terminou o ponto',
+      altStats: 'Estatísticas de um encontro',
+      langLabel: 'Idioma',
+      description: 'Estatísticas de padel, ponto a ponto. Descarregar a app para Android.'
+    },
+    es: {
+      title: 'Estadísticas de pádel, punto a punto.',
+      lead: 'Tres toques por punto. Al final tienes las estadísticas de cada jugadora y el informe del partido.',
+      cta: 'Descargar para Android',
+      meta: 'Versión {v} · {s} MB',
+      metaLoading: 'Archivo APK para Android',
+      ios: 'Por ahora la app solo existe para Android.',
+      desktop: 'Abre esta página en el móvil Android para instalar la app.',
+      installTitle: 'Instalar',
+      step1: 'Toca en Descargar y espera a que el archivo llegue al móvil.',
+      step2: 'Abre el archivo desde la notificación o desde la carpeta Descargas.',
+      step3: 'Si Android lo pide, permite que el navegador instale apps y toca en Instalar.',
+      protectTitle: 'Si aparece Play Protect',
+      protectBody: 'La app no está en Play Store, así que Android puede avisar de que no la conoce. Toca en «Más detalles» y después en «Instalar de todos modos».',
+      updatesTitle: 'Se actualiza sola',
+      updatesBody: 'Cuando haya una versión nueva, la app avisa en la pantalla de inicio y la instala con un toque. No tienes que volver a esta página.',
+      privacyTitle: 'Los datos se quedan contigo',
+      privacyBody: 'Todo lo que registras se queda en el móvil. Sin cuenta y sin publicidad.',
+      allVersions: 'Todas las versiones',
+      altRecord: 'Registro de un punto: cómo terminó el punto',
+      altStats: 'Estadísticas de un partido',
+      langLabel: 'Idioma',
+      description: 'Estadísticas de pádel, punto a punto. Descargar la app para Android.'
+    },
+    fr: {
+      title: 'Statistiques de padel, point par point.',
+      lead: 'Trois touches par point. À la fin, tu as les statistiques de chaque joueuse et le rapport du match.',
+      cta: 'Télécharger pour Android',
+      meta: 'Version {v} · {s} Mo',
+      metaLoading: 'Fichier APK pour Android',
+      ios: 'Pour l’instant, l’app n’existe que sur Android.',
+      desktop: 'Ouvre cette page sur ton téléphone Android pour installer l’app.',
+      installTitle: 'Installer',
+      step1: 'Touche Télécharger et attends que le fichier arrive sur le téléphone.',
+      step2: 'Ouvre le fichier depuis la notification ou le dossier Téléchargements.',
+      step3: 'Si Android le demande, autorise le navigateur à installer des applis et touche Installer.',
+      protectTitle: 'Si Play Protect s’affiche',
+      protectBody: 'L’app n’est pas sur le Play Store, donc Android peut prévenir qu’il ne la connaît pas. Touche « Plus de détails » puis « Installer quand même ».',
+      updatesTitle: 'Elle se met à jour toute seule',
+      updatesBody: 'Quand une nouvelle version sort, l’app te prévient sur l’écran d’accueil et l’installe en une touche. Pas besoin de revenir sur cette page.',
+      privacyTitle: 'Tes données restent chez toi',
+      privacyBody: 'Tout ce que tu enregistres reste sur le téléphone. Sans compte et sans publicité.',
+      allVersions: 'Toutes les versions',
+      altRecord: 'Saisie d’un point : comment le point s’est terminé',
+      altStats: 'Statistiques d’un match',
+      langLabel: 'Langue',
+      description: 'Statistiques de padel, point par point. Télécharger l’app pour Android.'
+    },
+    en: {
+      title: 'Padel statistics, point by point.',
+      lead: 'Three taps per point. At the end you get each player’s stats and the match report.',
+      cta: 'Download for Android',
+      meta: 'Version {v} · {s} MB',
+      metaLoading: 'APK file for Android',
+      ios: 'For now the app is only available on Android.',
+      desktop: 'Open this page on your Android phone to install the app.',
+      installTitle: 'Install',
+      step1: 'Tap Download and wait for the file to reach your phone.',
+      step2: 'Open the file from the notification or the Downloads folder.',
+      step3: 'If Android asks, allow your browser to install apps and tap Install.',
+      protectTitle: 'If Play Protect shows up',
+      protectBody: 'The app is not on the Play Store, so Android may say it does not recognise it. Tap “More details”, then “Install anyway”.',
+      updatesTitle: 'It updates itself',
+      updatesBody: 'When there is a new version, the app lets you know on the home screen and installs it with one tap. No need to come back to this page.',
+      privacyTitle: 'Your data stays with you',
+      privacyBody: 'Everything you record stays on the phone. No account, no ads.',
+      allVersions: 'All versions',
+      altRecord: 'Recording a point: how did the point end',
+      altStats: 'Stats for a match',
+      langLabel: 'Language',
+      description: 'Padel statistics, point by point. Download the app for Android.'
+    }
+  };
+
+  const REPO = 'LuisPCFialho/padel-stats-releases';
+
+  function pickLang() {
+    const asked = new URLSearchParams(location.search).get('lang');
+    if (asked && T[asked]) return asked;
+    for (const l of navigator.languages || [navigator.language || '']) {
+      const code = (l || '').slice(0, 2).toLowerCase();
+      if (T[code]) return code;
+    }
+    return 'pt';
+  }
+
+  const lang = pickLang();
+  const t = T[lang];
+  let release = null;
+
+  function render() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-t]').forEach(el => {
+      const key = el.dataset.t;
+      if (key === 'metaLoading' && release) return;
+      el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-alt]').forEach(el => { el.alt = t[el.dataset.alt]; });
+    document.querySelector('.langs').setAttribute('aria-label', t.langLabel);
+    document.querySelector('meta[name="description"]').content = t.description;
+    document.querySelectorAll('.langs a').forEach(a => {
+      a.setAttribute('aria-current', String(a.dataset.lang === lang));
+    });
+    if (release) {
+      document.getElementById('meta').textContent =
+        t.meta.replace('{v}', release.version).replace('{s}', release.size);
+    }
+  }
+
+  // O telemóvel da cliente é Android; num iPhone ou num computador explica-se
+  // porquê a app não instala ali.
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(ua)) {
+    document.getElementById('ios').hidden = false;
+  } else if (!/Android/.test(ua)) {
+    document.getElementById('desktop').hidden = false;
+  }
+
+  render();
+
+  // Sem esta resposta o botão continua a abrir a página da última versão.
+  fetch('https://api.github.com/repos/' + REPO + '/releases/latest', {
+    headers: { Accept: 'application/vnd.github+json' }
+  })
+    .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then(rel => {
+      const apk = rel.assets.find(a => /^PadelStats-\d+\.\d+\.\d+\.apk$/.test(a.name));
+      if (!apk) return;
+      document.getElementById('download').href = apk.browser_download_url;
+      release = {
+        version: rel.tag_name.replace(/^v/, ''),
+        size: Math.round(apk.size / 1048576)
+      };
+      render();
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
