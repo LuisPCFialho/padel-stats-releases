@@ -23,17 +23,17 @@ resto, em português, espanhol, francês e inglês.
 
 Os outros ficheiros (`-arm64-v8a`, `-armeabi-v7a`, `-x86_64`) são mais
 pequenos e servem cada um a um tipo de telemóvel; é esses que a app descarrega
-sozinha quando se actualiza.
+sozinha quando se atualiza.
 
-## Actualizações
+## Atualizações
 
 Não precisas de voltar aqui. Quando há uma versão nova, a app avisa no ecrã
-inicial: tocas em **Actualizar**, ela descarrega a versão nova, confirma que o
+inicial: tocas em **Atualizar**, ela descarrega a versão nova, confirma que o
 ficheiro é o publicado e abre o instalador. Na primeira vez o Android pede para
 autorizar o Padel Stats a instalar apps.
 
 Também podes procurar à mão: roda dentada no ecrã inicial > **Procurar
-actualizações**.
+atualizações**.
 
 ## Antes de mudar de telemóvel
 
