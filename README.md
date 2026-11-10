@@ -2,7 +2,7 @@
 
 Estatísticas de padel ponto a ponto, em três toques: como acabou o ponto, quem
 o fez e com que golpe. A app conta o resultado sozinha (regras FIP de 2026) e
-no fim tens as estatísticas de cada jogadora, o gráfico do encontro, o perfil
+no fim tens as estatísticas de cada atleta, o gráfico do encontro, o perfil
 ao longo da época e o relatório em PDF.
 
 Tudo o que registas fica no teu telemóvel. Sem conta e sem publicidade.
